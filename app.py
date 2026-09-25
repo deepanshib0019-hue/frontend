@@ -135,7 +135,7 @@ st.markdown("""
     }
 
 </style>
-""", unsafe_allow_html=True)fig - change these if your backend differs
+""", unsafe_allow_html=True)
 # ---------------------------------------------------------------------------
 DEFAULT_API_URL = "http://localhost:8000"
 UPLOAD_FIELD_NAME = "file"   # multipart field name for the PDF in POST /upload-resume
