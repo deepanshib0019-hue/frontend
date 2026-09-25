@@ -13,7 +13,129 @@ import pandas as pd
 import streamlit as st
 
 # ---------------------------------------------------------------------------
-# Config - change these if your backend differs
+# Conimport streamlit as st
+
+st.set_page_config(
+    page_title="InterviewAI",
+    page_icon="🤖",
+    layout="wide"
+)
+
+st.markdown("""
+<style>
+
+    /* Main background */
+    .stApp {
+        background: linear-gradient(135deg, #f8f9ff 0%, #eef1ff 100%);
+    }
+
+    /* Remove top padding */
+    .block-container {
+        padding-top: 2rem;
+        padding-bottom: 3rem;
+        max-width: 1200px;
+    }
+
+    /* Main title */
+    .hero-title {
+        font-size: 55px;
+        font-weight: 800;
+        text-align: center;
+        color: #15162b;
+        margin-bottom: 10px;
+    }
+
+    .hero-title span {
+        color: #6c63ff;
+    }
+
+    /* Subtitle */
+    .hero-subtitle {
+        text-align: center;
+        font-size: 19px;
+        color: #666b85;
+        margin-bottom: 35px;
+    }
+
+    /* Feature cards */
+    .feature-card {
+        background: white;
+        padding: 25px;
+        border-radius: 18px;
+        text-align: center;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+        border: 1px solid #eeeeff;
+        height: 160px;
+    }
+
+    .feature-icon {
+        font-size: 35px;
+        margin-bottom: 10px;
+    }
+
+    .feature-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #20213a;
+    }
+
+    .feature-text {
+        font-size: 14px;
+        color: #777b91;
+    }
+
+    /* Upload section */
+    .upload-card {
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.07);
+        margin-top: 25px;
+        margin-bottom: 35px;
+    }
+
+    /* Question cards */
+    .question-card {
+        background: white;
+        padding: 22px;
+        border-radius: 16px;
+        margin: 15px 0;
+        border-left: 5px solid #6c63ff;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+
+    .question-number {
+        color: #6c63ff;
+        font-weight: 800;
+        font-size: 14px;
+    }
+
+    .question-text {
+        color: #20213a;
+        font-size: 17px;
+        font-weight: 600;
+        margin-top: 8px;
+    }
+
+    /* Buttons */
+    .stButton > button {
+        width: 100%;
+        border-radius: 12px;
+        border: none;
+        padding: 12px;
+        font-size: 16px;
+        font-weight: 700;
+        background: #6c63ff;
+        color: white;
+    }
+
+    .stButton > button:hover {
+        background: #554be8;
+        color: white;
+    }
+
+</style>
+""", unsafe_allow_html=True)fig - change these if your backend differs
 # ---------------------------------------------------------------------------
 DEFAULT_API_URL = "http://localhost:8000"
 UPLOAD_FIELD_NAME = "file"   # multipart field name for the PDF in POST /upload-resume
