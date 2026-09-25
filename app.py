@@ -1,4 +1,3 @@
-
 """
 Resume-to-Interview Questions Generator - Streamlit frontend
 
@@ -21,112 +20,127 @@ UPLOAD_FIELD_NAME = "file"   # multipart field name for the PDF in POST /upload-
 REQUEST_TIMEOUT = 120        # seconds; scoring by an LLM can be slow
 
 st.set_page_config(
-    page_title="Resume → Interview Generator",
-    page_icon="🎯",
+    page_title="Resume Interview Generator",
+    page_icon=None,
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
 
 # ---------------------------------------------------------------------------
-# Visual theme (CSS only — no logic here)
+# Visual theme (CSS only - no logic here)
 # ---------------------------------------------------------------------------
 def inject_css():
     st.markdown(
         """
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
 
         html, body, [class*="css"]  { font-family: 'Inter', sans-serif; }
-        h1, h2, h3, .hero-title { font-family: 'Poppins', sans-serif; }
+        h1, h2, h3, .hero-title { font-family: 'Sora', sans-serif; }
 
         /* ---- Hero header ---- */
         .hero {
-            padding: 2rem 2.2rem;
-            border-radius: 18px;
-            background: linear-gradient(120deg, #6366f1 0%, #8b5cf6 55%, #ec4899 100%);
-            color: white;
+            padding: 2.2rem 2.4rem;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border: 1px solid rgba(148,163,184,0.25);
+            color: #f1f5f9;
             margin-bottom: 1.6rem;
-            box-shadow: 0 10px 30px rgba(99,102,241,0.25);
         }
-        .hero-title { font-size: 1.9rem; font-weight: 700; margin: 0 0 .3rem 0; }
-        .hero-sub { font-size: 0.98rem; opacity: 0.92; margin: 0; }
-        .hero-badges { margin-top: 0.9rem; }
-        .hero-badge {
-            display: inline-block; background: rgba(255,255,255,0.18);
-            padding: 4px 12px; border-radius: 999px; font-size: 0.78rem;
-            margin-right: 8px; border: 1px solid rgba(255,255,255,0.35);
+        .hero-title {
+            font-size: 1.7rem; font-weight: 700; margin: 0 0 .4rem 0;
+            letter-spacing: -0.3px;
+        }
+        .hero-sub { font-size: 0.95rem; color: #94a3b8; margin: 0; }
+        .hero-tags { margin-top: 1rem; }
+        .hero-tag {
+            display: inline-block; background: rgba(99,102,241,0.15);
+            color: #a5b4fc; padding: 4px 12px; border-radius: 6px;
+            font-size: 0.75rem; font-weight: 600; letter-spacing: 0.3px;
+            text-transform: uppercase; margin-right: 8px;
+            border: 1px solid rgba(99,102,241,0.3);
         }
 
         /* ---- Generic card ---- */
         .card {
-            background: var(--background-color, #ffffff0d);
             border: 1px solid rgba(148,163,184,0.25);
-            border-radius: 14px;
+            border-radius: 12px;
             padding: 1.1rem 1.3rem;
             margin-bottom: 0.9rem;
         }
 
         /* ---- Question card ---- */
         .q-card {
-            border-radius: 16px;
+            border-radius: 12px;
             padding: 1.4rem 1.5rem;
-            background: linear-gradient(135deg, rgba(99,102,241,0.10), rgba(236,72,153,0.08));
-            border: 1px solid rgba(99,102,241,0.30);
+            border: 1px solid rgba(99,102,241,0.35);
+            border-left: 4px solid #6366f1;
             margin-bottom: 1rem;
         }
-        .q-text { font-size: 1.08rem; font-weight: 500; line-height: 1.5; margin-bottom: 0.9rem; }
+        .q-text { font-size: 1.05rem; font-weight: 500; line-height: 1.55; margin-bottom: 1rem; }
         .meta-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
         .pill {
-            display: inline-block; padding: 4px 12px; border-radius: 999px;
-            font-size: 0.76rem; font-weight: 600; letter-spacing: 0.2px;
+            display: inline-block; padding: 4px 11px; border-radius: 6px;
+            font-size: 0.74rem; font-weight: 600; letter-spacing: 0.2px;
+            border: 1px solid transparent;
         }
-        .pill-topic   { background: rgba(99,102,241,0.15); color: #6366f1; }
-        .pill-domain  { background: rgba(14,165,233,0.15); color: #0ea5e9; }
-        .pill-easy    { background: rgba(34,197,94,0.18); color: #16a34a; }
-        .pill-medium  { background: rgba(234,179,8,0.20); color: #b45309; }
-        .pill-hard    { background: rgba(239,68,68,0.18); color: #dc2626; }
-        .pill-default { background: rgba(148,163,184,0.20); color: #475569; }
+        .pill-topic   { background: rgba(99,102,241,0.12); color: #818cf8; border-color: rgba(99,102,241,0.3); }
+        .pill-domain  { background: rgba(14,165,233,0.12); color: #38bdf8; border-color: rgba(14,165,233,0.3); }
+        .pill-easy    { background: rgba(34,197,94,0.14);  color: #4ade80; border-color: rgba(34,197,94,0.3); }
+        .pill-medium  { background: rgba(234,179,8,0.16);  color: #facc15; border-color: rgba(234,179,8,0.3); }
+        .pill-hard    { background: rgba(239,68,68,0.14);  color: #f87171; border-color: rgba(239,68,68,0.3); }
+        .pill-default { background: rgba(148,163,184,0.14); color: #94a3b8; border-color: rgba(148,163,184,0.3); }
 
         /* ---- Score card ---- */
         .score-card {
-            border-radius: 16px;
+            border-radius: 12px;
             padding: 1.3rem 1.5rem;
-            background: linear-gradient(135deg, #10b98122, #10b98108);
-            border: 1px solid rgba(16,185,129,0.35);
+            border: 1px solid rgba(148,163,184,0.25);
+            border-left: 4px solid #22c55e;
             margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1.6rem;
         }
-        .score-big { font-size: 2.4rem; font-weight: 700; font-family: 'Poppins', sans-serif; color: #10b981; }
-        .score-label { font-size: 0.85rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+        .score-big { font-size: 2.2rem; font-weight: 700; font-family: 'Sora', sans-serif; }
+        .score-label { font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.6px; }
+        .score-domain { font-size: 0.88rem; color: #cbd5e1; }
 
         /* ---- Section title with accent bar ---- */
         .section-title {
-            font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 1.05rem;
-            border-left: 4px solid #8b5cf6; padding-left: 10px; margin: 0.4rem 0 0.8rem 0;
+            font-family: 'Sora', sans-serif; font-weight: 600; font-size: 1.0rem;
+            border-left: 3px solid #6366f1; padding-left: 10px; margin: 0.4rem 0 0.8rem 0;
+            text-transform: uppercase; letter-spacing: 0.4px;
         }
 
         /* ---- Sidebar polish ---- */
         section[data-testid="stSidebar"] { border-right: 1px solid rgba(148,163,184,0.2); }
         .sidebar-tag {
-            background: linear-gradient(120deg, #6366f1, #8b5cf6);
-            color: white; padding: 6px 12px; border-radius: 10px;
-            font-size: 0.82rem; font-weight: 600; display: inline-block; margin-bottom: 6px;
+            font-size: 0.72rem; font-weight: 700; letter-spacing: 0.6px;
+            text-transform: uppercase; color: #818cf8; margin-bottom: 6px; display: block;
+        }
+        .session-box {
+            border: 1px solid rgba(34,197,94,0.3); border-left: 3px solid #22c55e;
+            border-radius: 8px; padding: 0.7rem 0.9rem; margin-top: 0.4rem;
         }
 
         /* ---- Buttons ---- */
         .stButton > button {
-            border-radius: 10px; font-weight: 600; border: none;
-            background: linear-gradient(120deg, #6366f1, #8b5cf6);
-            color: white; transition: 0.15s ease-in-out;
+            border-radius: 8px; font-weight: 600; border: 1px solid rgba(99,102,241,0.4);
+            background: #6366f1; color: white; transition: 0.15s ease-in-out;
         }
-        .stButton > button:hover { transform: translateY(-1px); opacity: 0.93; }
+        .stButton > button:hover { background: #4f46e5; border-color: #4f46e5; }
 
         /* ---- Tabs ---- */
         .stTabs [data-baseweb="tab"] { font-weight: 600; font-family: 'Inter', sans-serif; }
 
         /* Chip list for skills */
-        .chip { display:inline-block; background: rgba(99,102,241,0.12); color:#6366f1;
-                padding: 5px 12px; border-radius: 999px; font-size: 0.8rem; margin: 3px 4px 3px 0; }
+        .chip {
+            display:inline-block; background: rgba(99,102,241,0.10); color:#818cf8;
+            padding: 5px 12px; border-radius: 6px; font-size: 0.78rem; margin: 3px 4px 3px 0;
+            border: 1px solid rgba(99,102,241,0.25);
+        }
         </style>
         """,
         unsafe_allow_html=True,
@@ -207,9 +221,9 @@ def show_question(q):
         <div class="q-card">
             <div class="q-text">{q['question']}</div>
             <div class="meta-row">
-                <span class="pill pill-topic">📌 {q['topic'] or '—'}</span>
-                <span class="pill pill-domain">🧩 {q['domain'] or '—'}</span>
-                <span class="pill {diff_class}">⚡ {q['difficulty'] or '—'}</span>
+                <span class="pill pill-topic">TOPIC: {q['topic'] or '-'}</span>
+                <span class="pill pill-domain">DOMAIN: {q['domain'] or '-'}</span>
+                <span class="pill {diff_class}">DIFFICULTY: {q['difficulty'] or '-'}</span>
             </div>
         </div>
         """,
@@ -218,16 +232,18 @@ def show_question(q):
 
 
 def show_result(result):
-    st.markdown('<div class="section-title">📈 Result of your last answer</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">Result of your last answer</div>', unsafe_allow_html=True)
 
     score = result.get("score", "-")
     domain = result.get("domain", "")
     st.markdown(
         f"""
         <div class="score-card">
-            <div class="score-label">Score</div>
-            <div class="score-big">{score}</div>
-            <div style="color:#64748b; font-size:0.85rem; margin-top:2px;">Domain: <b>{domain}</b></div>
+            <div>
+                <div class="score-label">Score</div>
+                <div class="score-big">{score}</div>
+            </div>
+            <div class="score-domain">Domain<br><b>{domain}</b></div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -239,7 +255,7 @@ def show_result(result):
         for col, (key, value) in zip(cols, breakdown.items()):
             col.metric(label(key), value)
 
-    st.markdown("**💬 Feedback**")
+    st.markdown("**Feedback**")
     st.info(result.get("feedback") or "No feedback available.")
 
 
@@ -249,7 +265,7 @@ def show_result(result):
 init_state()
 inject_css()
 
-st.sidebar.markdown('<span class="sidebar-tag">⚙️ Settings</span>', unsafe_allow_html=True)
+st.sidebar.markdown('<span class="sidebar-tag">Settings</span>', unsafe_allow_html=True)
 st.session_state.setdefault("api_url", DEFAULT_API_URL)
 st.sidebar.text_input("Backend URL", key="api_url")
 
@@ -260,16 +276,26 @@ st.sidebar.text_input(
 )
 
 st.sidebar.divider()
-st.sidebar.markdown('<span class="sidebar-tag">🎚️ Domain mix</span>', unsafe_allow_html=True)
+st.sidebar.markdown('<span class="sidebar-tag">Domain mix</span>', unsafe_allow_html=True)
 st.sidebar.slider("DSA weight", 0.0, 1.0, step=0.05, key="dsa_weight")
 ai_ml_weight = round(1.0 - st.session_state.dsa_weight, 2)
-st.sidebar.progress(st.session_state.dsa_weight, text=f"DSA {st.session_state.dsa_weight:.2f}  ·  AI/ML {ai_ml_weight:.2f}")
+st.sidebar.progress(
+    st.session_state.dsa_weight,
+    text=f"DSA {st.session_state.dsa_weight:.2f}  /  AI-ML {ai_ml_weight:.2f}",
+)
 
 if st.session_state.session_id:
     st.sidebar.divider()
-    st.sidebar.markdown('<span class="sidebar-tag">🟢 Live session</span>', unsafe_allow_html=True)
-    st.sidebar.code(st.session_state.session_id, language=None)
-    st.sidebar.metric("Questions answered", st.session_state.answered)
+    st.sidebar.markdown('<span class="sidebar-tag">Live session</span>', unsafe_allow_html=True)
+    st.sidebar.markdown(
+        f"""
+        <div class="session-box">
+            <code style="font-size:0.78rem;">{st.session_state.session_id}</code><br>
+            <span style="font-size:0.8rem; color:#94a3b8;">Questions answered: <b>{st.session_state.answered}</b></span>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
     if st.sidebar.button("End session"):
         st.session_state.session_id = None
         st.session_state.question = None
@@ -279,7 +305,7 @@ if st.session_state.session_id:
         st.rerun()
 
 st.sidebar.divider()
-st.sidebar.caption("Built with Streamlit · Powered by an LLM scoring backend")
+st.sidebar.caption("Streamlit frontend - LLM scoring backend")
 
 
 # ---------------------------------------------------------------------------
@@ -288,12 +314,12 @@ st.sidebar.caption("Built with Streamlit · Powered by an LLM scoring backend")
 st.markdown(
     """
     <div class="hero">
-        <div class="hero-title">🎯 Resume → Interview Questions Generator</div>
-        <p class="hero-sub">Upload your resume, get a tailored DSA / AI-ML interview, and track how you improve over time.</p>
-        <div class="hero-badges">
-            <span class="hero-badge">📄 Resume Parsing</span>
-            <span class="hero-badge">🧠 Adaptive Questions</span>
-            <span class="hero-badge">📊 Progress Tracking</span>
+        <div class="hero-title">Resume-to-Interview Questions Generator</div>
+        <p class="hero-sub">Upload a resume, run a tailored DSA / AI-ML interview, and track improvement over time.</p>
+        <div class="hero-tags">
+            <span class="hero-tag">Resume Parsing</span>
+            <span class="hero-tag">Adaptive Questions</span>
+            <span class="hero-tag">Progress Tracking</span>
         </div>
     </div>
     """,
@@ -301,7 +327,7 @@ st.markdown(
 )
 
 tab_upload, tab_start, tab_interview, tab_progress = st.tabs(
-    ["📄 Upload Resume", "🚀 Start Interview", "💬 Interview", "📊 Progress"]
+    ["Upload Resume", "Start Interview", "Interview", "Progress"]
 )
 
 # ---- Upload ---------------------------------------------------------------
@@ -329,14 +355,14 @@ with tab_upload:
 
         col_a, col_b = st.columns(2)
         with col_a:
-            st.markdown('<div class="section-title">🛠️ Detected skills</div>', unsafe_allow_html=True)
+            st.markdown('<div class="section-title">Detected skills</div>', unsafe_allow_html=True)
             if st.session_state.skills:
                 chips = "".join(f'<span class="chip">{s}</span>' for s in st.session_state.skills)
                 st.markdown(f'<div class="card">{chips}</div>', unsafe_allow_html=True)
             else:
                 st.write("No skills returned.")
         with col_b:
-            st.markdown('<div class="section-title">🚧 Projects</div>', unsafe_allow_html=True)
+            st.markdown('<div class="section-title">Projects</div>', unsafe_allow_html=True)
             if st.session_state.projects:
                 items = "".join(f"<li style='margin-bottom:4px;'>{p}</li>" for p in st.session_state.projects)
                 st.markdown(f'<div class="card"><ul style="margin:0;padding-left:1.1rem;">{items}</ul></div>', unsafe_allow_html=True)
@@ -350,7 +376,7 @@ with tab_start:
         f"""
         <div class="card">
         Mix: <b>{st.session_state.dsa_weight:.2f}</b> DSA / <b>{ai_ml_weight:.2f}</b> AI-ML
-        &nbsp;·&nbsp; <span style="color:#64748b;">change it in the sidebar</span>
+        &nbsp;-&nbsp; <span style="color:#94a3b8;">change it in the sidebar</span>
         </div>
         """,
         unsafe_allow_html=True,
@@ -380,11 +406,11 @@ with tab_start:
                 st.rerun()
 
     if st.session_state.session_id and st.session_state.question:
-        st.success("Interview in progress - head to the **Interview** tab.")
+        st.success("Interview in progress - head to the Interview tab.")
 
 # ---- Interview ------------------------------------------------------------
 with tab_interview:
-    st.markdown('<div class="section-title">💬 Interview</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">Interview</div>', unsafe_allow_html=True)
 
     if st.session_state.last_result:
         show_result(st.session_state.last_result)
@@ -393,7 +419,7 @@ with tab_interview:
     question = st.session_state.question
 
     if question:
-        st.markdown('<div class="section-title">❓ Current question</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-title">Current question</div>', unsafe_allow_html=True)
         show_question(question)
 
         # Keyed by question id so the box starts empty for every new question
@@ -425,13 +451,13 @@ with tab_interview:
                     st.rerun()
 
     elif st.session_state.finished:
-        st.success("🎉 That was the last question. Check the **Progress** tab for your summary.")
+        st.success("That was the last question. Check the Progress tab for your summary.")
     else:
-        st.info("Start an interview from the **Start Interview** tab first.")
+        st.info("Start an interview from the Start Interview tab first.")
 
 # ---- Progress -------------------------------------------------------------
 with tab_progress:
-    st.markdown('<div class="section-title">📊 Your progress</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">Your progress</div>', unsafe_allow_html=True)
 
     if st.button("Load progress"):
         if not st.session_state.user_id:
@@ -443,7 +469,7 @@ with tab_progress:
             else:
                 left, right = st.columns(2)
                 with left:
-                    st.markdown('<div class="section-title">🔴 Weak topics</div>', unsafe_allow_html=True)
+                    st.markdown('<div class="section-title">Weak topics</div>', unsafe_allow_html=True)
                     weak = data.get("weak_topics") or []
                     if weak:
                         chips = "".join(f'<span class="pill pill-hard" style="margin:3px;">{t}</span>' for t in weak)
@@ -451,7 +477,7 @@ with tab_progress:
                     else:
                         st.write("None yet.")
                 with right:
-                    st.markdown('<div class="section-title">🟢 Strong topics</div>', unsafe_allow_html=True)
+                    st.markdown('<div class="section-title">Strong topics</div>', unsafe_allow_html=True)
                     strong = data.get("strong_topics") or []
                     if strong:
                         chips = "".join(f'<span class="pill pill-easy" style="margin:3px;">{t}</span>' for t in strong)
@@ -459,7 +485,7 @@ with tab_progress:
                     else:
                         st.write("None yet.")
 
-                st.markdown('<div class="section-title">📚 Recommended topics</div>', unsafe_allow_html=True)
+                st.markdown('<div class="section-title">Recommended topics</div>', unsafe_allow_html=True)
                 recs = data.get("recommended_topics") or {}
                 if not recs:
                     st.write("No recommendations yet.")
@@ -478,7 +504,7 @@ with tab_progress:
                         if reason:
                             st.caption(reason)
 
-                st.markdown('<div class="section-title">📜 Interview history</div>', unsafe_allow_html=True)
+                st.markdown('<div class="section-title">Interview history</div>', unsafe_allow_html=True)
                 history = data.get("history") or []
                 if history:
                     df = pd.DataFrame(history)
