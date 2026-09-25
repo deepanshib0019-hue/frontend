@@ -1,3 +1,5 @@
+
+
 import requests
 import pandas as pd
 import streamlit as st
@@ -15,317 +17,332 @@ st.set_page_config(
 
 
 # ============================================================
-# CUSTOM DESIGN
+# CUSTOM CSS
 # ============================================================
 
 st.markdown("""
 <style>
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    /* ------------------------------
+       GLOBAL
+    ------------------------------ */
 
-html, body, [class*="css"] {
-    font-family: 'Inter', sans-serif;
-}
+    .stApp {
+        background: #f5f7fb;
+    }
 
-.stApp {
-    background: #f6f8fc;
-}
+    .block-container {
+        max-width: 1250px;
+        padding-top: 2.5rem;
+        padding-bottom: 4rem;
+    }
 
-/* Remove default top spacing */
-.block-container {
-    padding-top: 2rem;
-    padding-bottom: 4rem;
-    max-width: 1250px;
-}
+    /* Hide Streamlit branding */
+    #MainMenu {
+        visibility: hidden;
+    }
 
-/* Sidebar */
-section[data-testid="stSidebar"] {
-    background: #111827;
-    border-right: 1px solid #1f2937;
-}
+    footer {
+        visibility: hidden;
+    }
 
-section[data-testid="stSidebar"] * {
-    color: #e5e7eb;
-}
+    /* ------------------------------
+       SIDEBAR
+    ------------------------------ */
 
-section[data-testid="stSidebar"] h1,
-section[data-testid="stSidebar"] h2,
-section[data-testid="stSidebar"] h3 {
-    color: white;
-}
+    section[data-testid="stSidebar"] {
+        background: #111827;
+        border-right: 1px solid #202938;
+    }
 
-/* Main hero */
-.hero {
-    background: linear-gradient(
-        135deg,
-        #111827 0%,
-        #1e293b 55%,
-        #334155 100%
-    );
+    section[data-testid="stSidebar"] * {
+        color: #e5e7eb;
+    }
 
-    padding: 55px 55px 50px 55px;
-    border-radius: 24px;
-    margin-bottom: 30px;
-    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.14);
-}
+    section[data-testid="stSidebar"] input {
+        background: #1f2937 !important;
+        color: #f9fafb !important;
+        border: 1px solid #374151 !important;
+    }
 
-.hero-label {
-    color: #93c5fd;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 18px;
-}
+    section[data-testid="stSidebar"] .stSlider > div > div {
+        color: #ffffff;
+    }
 
-.hero-title {
-    color: white;
-    font-size: 46px;
-    line-height: 1.1;
-    font-weight: 800;
-    margin: 0;
-}
+    /* ------------------------------
+       HERO
+    ------------------------------ */
 
-.hero-title span {
-    color: #60a5fa;
-}
+    .hero {
+        background: linear-gradient(
+            135deg,
+            #111827 0%,
+            #172554 100%
+        );
 
-.hero-description {
-    color: #cbd5e1;
-    font-size: 17px;
-    line-height: 1.7;
-    max-width: 720px;
-    margin-top: 20px;
-}
+        border-radius: 24px;
+        padding: 42px 48px;
+        margin-bottom: 28px;
 
-.status {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 28px;
-    padding: 9px 15px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 30px;
-    color: #dbeafe;
-    font-size: 13px;
-}
+        border: 1px solid #24324a;
+        box-shadow: 0 15px 40px rgba(15, 23, 42, 0.12);
+    }
 
-.status-dot {
-    width: 8px;
-    height: 8px;
-    background: #22c55e;
-    border-radius: 50%;
-}
+    .eyebrow {
+        color: #93c5fd;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 14px;
+    }
 
+    .hero-title {
+        color: #ffffff;
+        font-size: 42px;
+        font-weight: 750;
+        line-height: 1.1;
+        margin: 0;
+    }
 
-/* Feature cards */
+    .hero-title span {
+        color: #60a5fa;
+    }
 
-.feature-card {
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 18px;
-    padding: 25px;
-    min-height: 155px;
-    box-shadow: 0 8px 25px rgba(15,23,42,0.05);
-}
+    .hero-description {
+        color: #cbd5e1;
+        font-size: 16px;
+        line-height: 1.7;
+        max-width: 720px;
+        margin-top: 16px;
+    }
 
-.feature-number {
-    color: #2563eb;
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 1px;
-    margin-bottom: 15px;
-}
+    .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
 
-.feature-title {
-    color: #111827;
-    font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 9px;
-}
+        margin-top: 22px;
+        padding: 8px 14px;
 
-.feature-text {
-    color: #64748b;
-    font-size: 14px;
-    line-height: 1.6;
-}
+        background: rgba(96, 165, 250, 0.10);
+        border: 1px solid rgba(96, 165, 250, 0.25);
+        border-radius: 999px;
 
+        color: #bfdbfe;
+        font-size: 13px;
+        font-weight: 600;
+    }
 
-/* Section headings */
+    .status-dot {
+        width: 7px;
+        height: 7px;
+        background: #60a5fa;
+        border-radius: 50%;
+    }
 
-.section-label {
-    color: #2563eb;
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-}
+    /* ------------------------------
+       FEATURE CARDS
+    ------------------------------ */
 
-.section-title {
-    color: #111827;
-    font-size: 30px;
-    font-weight: 800;
-    margin-bottom: 8px;
-}
+    .feature-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 18px;
 
-.section-description {
-    color: #64748b;
-    font-size: 15px;
-    margin-bottom: 25px;
-}
+        padding: 25px;
+        min-height: 155px;
 
+        box-shadow: 0 8px 25px rgba(15, 23, 42, 0.05);
 
-/* Upload area */
+        transition: transform 0.2s ease,
+                    box-shadow 0.2s ease;
+    }
 
-.upload-card {
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 8px 30px rgba(15,23,42,0.05);
-    margin-top: 20px;
-}
+    .feature-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+    }
 
-.upload-title {
-    color: #111827;
-    font-size: 21px;
-    font-weight: 700;
-    margin-bottom: 8px;
-}
+    .feature-number {
+        color: #2563eb;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        margin-bottom: 16px;
+    }
 
-.upload-description {
-    color: #64748b;
-    font-size: 14px;
-    margin-bottom: 20px;
-}
+    .feature-title {
+        color: #111827;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 9px;
+    }
 
+    .feature-text {
+        color: #64748b;
+        font-size: 14px;
+        line-height: 1.6;
+    }
 
-/* Metrics */
+    /* ------------------------------
+       SECTION HEADINGS
+    ------------------------------ */
 
-.metric-card {
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 6px 20px rgba(15,23,42,0.04);
-}
+    .section-label {
+        color: #64748b;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.8px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
 
-.metric-label {
-    color: #64748b;
-    font-size: 13px;
-    margin-bottom: 6px;
-}
+    .section-title {
+        color: #111827;
+        font-size: 28px;
+        font-weight: 750;
+        margin-bottom: 6px;
+    }
 
-.metric-value {
-    color: #111827;
-    font-size: 28px;
-    font-weight: 800;
-}
+    .section-description {
+        color: #64748b;
+        font-size: 14px;
+        margin-bottom: 22px;
+    }
 
+    /* ------------------------------
+       UPLOAD CARD
+    ------------------------------ */
 
-/* Question card */
+    .upload-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 20px;
 
-.question-card {
-    background: white;
-    border: 1px solid #dbeafe;
-    border-left: 4px solid #2563eb;
-    border-radius: 18px;
-    padding: 28px;
-    margin: 20px 0;
-    box-shadow: 0 8px 25px rgba(15,23,42,0.05);
-}
+        padding: 30px;
 
-.question-label {
-    color: #2563eb;
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-}
+        box-shadow: 0 8px 25px rgba(15, 23, 42, 0.05);
 
-.question-text {
-    color: #111827;
-    font-size: 21px;
-    line-height: 1.55;
-    font-weight: 600;
-    margin-top: 12px;
-}
+        margin-top: 20px;
+        margin-bottom: 28px;
+    }
 
+    .upload-title {
+        color: #111827;
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 7px;
+    }
 
-/* Tags */
+    .upload-text {
+        color: #64748b;
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
 
-.tag {
-    display: inline-block;
-    background: #eff6ff;
-    color: #1d4ed8;
-    border: 1px solid #dbeafe;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    margin-right: 7px;
-}
+    /* ------------------------------
+       BUTTONS
+    ------------------------------ */
 
+    .stButton > button {
+        border-radius: 10px !important;
+        border: 1px solid #2563eb !important;
 
-/* Buttons */
+        background: #2563eb !important;
+        color: #ffffff !important;
 
-.stButton > button {
-    width: 100%;
-    min-height: 45px;
-    border-radius: 10px;
-    border: 1px solid #2563eb;
-    background: #2563eb;
-    color: white;
-    font-weight: 600;
-    font-size: 14px;
-    transition: 0.2s ease;
-}
+        font-weight: 650 !important;
 
-.stButton > button:hover {
-    background: #1d4ed8;
-    border-color: #1d4ed8;
-}
+        padding: 10px 20px !important;
 
+        transition: all 0.2s ease;
+    }
 
-/* File uploader */
+    .stButton > button:hover {
+        background: #1d4ed8 !important;
+        border-color: #1d4ed8 !important;
+    }
 
-[data-testid="stFileUploader"] {
-    background: #f8fafc;
-    border: 1px dashed #94a3b8;
-    border-radius: 14px;
-    padding: 10px;
-}
+    /* ------------------------------
+       TEXT AREA
+    ------------------------------ */
 
+    textarea {
+        border-radius: 12px !important;
+        border: 1px solid #dbe1ea !important;
+    }
 
-/* Text area */
+    /* ------------------------------
+       METRICS
+    ------------------------------ */
 
-textarea {
-    border-radius: 12px !important;
-}
+    [data-testid="stMetric"] {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 15px;
+        padding: 18px;
+    }
 
+    /* ------------------------------
+       TABS
+    ------------------------------ */
 
-/* Tabs */
+    button[data-baseweb="tab"] {
+        font-weight: 600;
+        color: #64748b;
+    }
 
-button[data-baseweb="tab"] {
-    font-weight: 600;
-}
+    button[data-baseweb="tab"][aria-selected="true"] {
+        color: #2563eb;
+    }
 
-button[data-baseweb="tab"][aria-selected="true"] {
-    color: #2563eb;
-}
+    /* ------------------------------
+       QUESTION CARD
+    ------------------------------ */
 
+    .question-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-left: 4px solid #2563eb;
 
-/* Hide Streamlit branding */
+        border-radius: 16px;
 
-#MainMenu {
-    visibility: hidden;
-}
+        padding: 25px;
 
-footer {
-    visibility: hidden;
-}
+        margin: 18px 0;
+
+        box-shadow: 0 7px 20px rgba(15, 23, 42, 0.05);
+    }
+
+    .question-label {
+        color: #2563eb;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+    }
+
+    .question-text {
+        color: #111827;
+        font-size: 19px;
+        font-weight: 650;
+        line-height: 1.55;
+    }
+
+    /* ------------------------------
+       INFO BOX
+    ------------------------------ */
+
+    .info-card {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        border-radius: 14px;
+        padding: 18px;
+        color: #1e3a8a;
+    }
 
 </style>
 """, unsafe_allow_html=True)
@@ -354,10 +371,9 @@ def init_state():
         "last_result": None,
         "skills": [],
         "projects": [],
-        "dsa_weight": 0.5,
+        "dsa_weight": 0.35,
         "answered": 0,
         "finished": False,
-        "progress_data": None,
     }
 
     for key, value in defaults.items():
@@ -430,141 +446,6 @@ def call_api(method, path, **kwargs):
 
 
 # ============================================================
-# DISPLAY FUNCTIONS
-# ============================================================
-
-def show_question(q):
-
-    st.markdown(
-        f"""
-        <div class="question-card">
-
-            <div class="question-label">
-                Current Interview Question
-            </div>
-
-            <div class="question-text">
-                {q["question"]}
-            </div>
-
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-    c1, c2, c3 = st.columns(3)
-
-    with c1:
-        st.markdown(
-            f'<span class="tag">Topic: {q["topic"]}</span>',
-            unsafe_allow_html=True
-        )
-
-    with c2:
-        st.markdown(
-            f'<span class="tag">Domain: {q["domain"]}</span>',
-            unsafe_allow_html=True
-        )
-
-    with c3:
-        st.markdown(
-            f'<span class="tag">Difficulty: {q["difficulty"]}</span>',
-            unsafe_allow_html=True
-        )
-
-
-def show_result(result):
-
-    st.markdown(
-        """
-        <div class="section-label">
-            Evaluation
-        </div>
-
-        <div class="section-title">
-            Answer analysis
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-    score = result.get("score", "-")
-    domain = result.get("domain", "-")
-
-    c1, c2 = st.columns(2)
-
-    with c1:
-        st.markdown(
-            f"""
-            <div class="metric-card">
-
-                <div class="metric-label">
-                    Overall Score
-                </div>
-
-                <div class="metric-value">
-                    {score}
-                </div>
-
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-    with c2:
-        st.markdown(
-            f"""
-            <div class="metric-card">
-
-                <div class="metric-label">
-                    Domain
-                </div>
-
-                <div class="metric-value"
-                     style="font-size:22px;">
-                    {domain}
-                </div>
-
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-    breakdown = result.get("breakdown") or {}
-
-    if breakdown:
-
-        st.write("")
-
-        cols = st.columns(len(breakdown))
-
-        for col, (key, value) in zip(cols, breakdown.items()):
-
-            with col:
-                st.metric(
-                    key.replace("_", " ").title(),
-                    value
-                )
-
-    st.write("")
-
-    st.markdown(
-        '<div class="section-label">Feedback</div>',
-        unsafe_allow_html=True
-    )
-
-    feedback = result.get("feedback")
-
-    if feedback:
-
-        st.info(feedback)
-
-    else:
-
-        st.write("No feedback available.")
-
-
-# ============================================================
 # SIDEBAR
 # ============================================================
 
@@ -573,18 +454,18 @@ with st.sidebar:
     st.markdown(
         """
         <div style="
-            font-size:26px;
-            font-weight:800;
-            color:white;
+            font-size:24px;
+            font-weight:750;
+            color:#ffffff;
             margin-bottom:4px;
         ">
             InterviewAI
         </div>
 
         <div style="
-            color:#94a3b8;
             font-size:13px;
-            margin-bottom:35px;
+            color:#94a3b8;
+            margin-bottom:28px;
         ">
             Resume-driven interview preparation
         </div>
@@ -592,9 +473,7 @@ with st.sidebar:
         unsafe_allow_html=True
     )
 
-    st.markdown(
-        "### Configuration"
-    )
+    st.markdown("### Configuration")
 
     st.text_input(
         "Backend URL",
@@ -604,7 +483,7 @@ with st.sidebar:
     st.text_input(
         "User ID",
         key="user_id",
-        help="Automatically filled after resume upload."
+        help="Automatically populated after resume upload."
     )
 
     st.divider()
@@ -624,26 +503,31 @@ with st.sidebar:
         2
     )
 
-    st.write(
-        f"DSA: **{st.session_state.dsa_weight:.2f}**"
-    )
+    col1, col2 = st.columns(2)
 
-    st.write(
-        f"AI / ML: **{ai_ml_weight:.2f}**"
-    )
+    with col1:
+        st.caption("DSA")
+        st.write(f"**{st.session_state.dsa_weight:.2f}**")
+
+    with col2:
+        st.caption("AI / ML")
+        st.write(f"**{ai_ml_weight:.2f}**")
 
     if st.session_state.session_id:
 
         st.divider()
 
-        st.markdown("### Current session")
+        st.caption("CURRENT SESSION")
 
         st.write(
             f"Questions answered: "
             f"**{st.session_state.answered}**"
         )
 
-        if st.button("End session"):
+        if st.button(
+            "End session",
+            use_container_width=True
+        ):
 
             st.session_state.session_id = None
             st.session_state.question = None
@@ -662,8 +546,8 @@ st.markdown(
     """
     <div class="hero">
 
-        <div class="hero-label">
-            RESUME INTELLIGENCE SYSTEM
+        <div class="eyebrow">
+            AI INTERVIEW PREPARATION SYSTEM
         </div>
 
         <div class="hero-title">
@@ -672,9 +556,9 @@ st.markdown(
         </div>
 
         <div class="hero-description">
-            Upload your resume and generate targeted
-            DSA and AI/ML interview questions based on
-            your skills, projects and experience.
+            Upload your resume and generate targeted DSA
+            and AI/ML interview questions based on your
+            skills, projects and experience.
         </div>
 
         <div class="status">
@@ -700,9 +584,7 @@ with c1:
         """
         <div class="feature-card">
 
-            <div class="feature-number">
-                01
-            </div>
+            <div class="feature-number">01</div>
 
             <div class="feature-title">
                 Resume Analysis
@@ -725,9 +607,7 @@ with c2:
         """
         <div class="feature-card">
 
-            <div class="feature-number">
-                02
-            </div>
+            <div class="feature-number">02</div>
 
             <div class="feature-title">
                 Adaptive Questions
@@ -750,9 +630,7 @@ with c3:
         """
         <div class="feature-card">
 
-            <div class="feature-number">
-                03
-            </div>
+            <div class="feature-number">03</div>
 
             <div class="feature-title">
                 Answer Evaluation
@@ -769,12 +647,11 @@ with c3:
     )
 
 
-st.write("")
-st.write("")
+st.markdown("<br>", unsafe_allow_html=True)
 
 
 # ============================================================
-# NAVIGATION
+# TABS
 # ============================================================
 
 tab_upload, tab_start, tab_interview, tab_progress = st.tabs(
@@ -804,8 +681,8 @@ with tab_upload:
         </div>
 
         <div class="section-description">
-            Upload a PDF resume to extract your skills,
-            projects and interview-relevant information.
+            Upload a PDF resume to extract skills, projects
+            and interview-relevant information.
         </div>
         """,
         unsafe_allow_html=True
@@ -818,20 +695,27 @@ with tab_upload:
 
     pdf = st.file_uploader(
         "Choose your PDF resume",
-        type=["pdf"]
+        type=["pdf"],
+        label_visibility="collapsed"
     )
 
     st.markdown(
-        '</div>',
+        """
+        <div class="upload-text">
+            Supported format: PDF
+        </div>
+        """,
         unsafe_allow_html=True
     )
 
-    st.write("")
-
-    if st.button(
+    upload_clicked = st.button(
         "Analyse Resume",
         disabled=pdf is None
-    ):
+    )
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    if upload_clicked:
 
         files = {
             UPLOAD_FIELD_NAME: (
@@ -841,9 +725,7 @@ with tab_upload:
             )
         }
 
-        with st.spinner(
-            "Analysing resume..."
-        ):
+        with st.spinner("Analysing resume..."):
 
             data, error = call_api(
                 "POST",
@@ -882,107 +764,56 @@ with tab_upload:
                     weights["dsa"]
                 )
 
-            st.success(
-                "Resume analysed successfully."
-            )
+            st.success("Resume analysed successfully.")
 
             st.rerun()
-
 
     if (
         st.session_state.skills
         or st.session_state.projects
     ):
 
-        st.write("")
+        st.markdown("### Resume analysis")
 
-        st.markdown(
-            """
-            <div class="section-label">
-                RESUME ANALYSIS
-            </div>
+        left, right = st.columns(2)
 
-            <div class="section-title">
-                Extracted profile
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+        with left:
 
-        c1, c2 = st.columns(2)
+            st.markdown("**Detected skills**")
 
-        with c1:
-
-            st.markdown(
-                '<div class="metric-card">',
-                unsafe_allow_html=True
-            )
-
-            st.markdown(
-                '<div class="metric-label">Skills detected</div>',
-                unsafe_allow_html=True
-            )
-
-            st.markdown(
-                f'<div class="metric-value">{len(st.session_state.skills)}</div>',
-                unsafe_allow_html=True
-            )
-
-            st.markdown(
-                '</div>',
-                unsafe_allow_html=True
-            )
-
-        with c2:
-
-            st.markdown(
-                '<div class="metric-card">',
-                unsafe_allow_html=True
-            )
-
-            st.markdown(
-                '<div class="metric-label">Projects detected</div>',
-                unsafe_allow_html=True
-            )
-
-            st.markdown(
-                f'<div class="metric-value">{len(st.session_state.projects)}</div>',
-                unsafe_allow_html=True
-            )
-
-            st.markdown(
-                '</div>',
-                unsafe_allow_html=True
-            )
-
-        st.write("")
-
-        if st.session_state.skills:
-
-            st.subheader("Detected skills")
-
-            for skill in st.session_state.skills:
-
-                st.markdown(
-                    f'<span class="tag">{skill}</span>',
-                    unsafe_allow_html=True
-                )
-
-        if st.session_state.projects:
-
-            st.write("")
-
-            st.subheader("Projects")
-
-            for project in st.session_state.projects:
+            if st.session_state.skills:
 
                 st.write(
-                    f"• {project}"
+                    ", ".join(
+                        st.session_state.skills
+                    )
+                )
+
+            else:
+
+                st.caption(
+                    "No skills returned."
+                )
+
+        with right:
+
+            st.markdown("**Projects**")
+
+            if st.session_state.projects:
+
+                for project in st.session_state.projects:
+
+                    st.write(project)
+
+            else:
+
+                st.caption(
+                    "No projects returned."
                 )
 
 
 # ============================================================
-# START INTERVIEW
+# START INTERVIEW TAB
 # ============================================================
 
 with tab_start:
@@ -994,60 +825,37 @@ with tab_start:
         </div>
 
         <div class="section-title">
-            Start an adaptive interview
+            Start your interview
         </div>
 
         <div class="section-description">
-            Configure the interview domain mix and
-            generate your first personalised question.
+            Questions will be generated using the domain
+            distribution selected in the sidebar.
         </div>
         """,
         unsafe_allow_html=True
     )
 
-    c1, c2 = st.columns(2)
+    m1, m2 = st.columns(2)
 
-    with c1:
-
-        st.markdown(
-            f"""
-            <div class="metric-card">
-
-                <div class="metric-label">
-                    DSA questions
-                </div>
-
-                <div class="metric-value">
-                    {st.session_state.dsa_weight:.0%}
-                </div>
-
-            </div>
-            """,
-            unsafe_allow_html=True
+    with m1:
+        st.metric(
+            "DSA",
+            f"{st.session_state.dsa_weight:.0%}"
         )
 
-    with c2:
-
-        st.markdown(
-            f"""
-            <div class="metric-card">
-
-                <div class="metric-label">
-                    AI / ML questions
-                </div>
-
-                <div class="metric-value">
-                    {ai_ml_weight:.0%}
-                </div>
-
-            </div>
-            """,
-            unsafe_allow_html=True
+    with m2:
+        st.metric(
+            "AI / ML",
+            f"{ai_ml_weight:.0%}"
         )
 
-    st.write("")
+    st.markdown("<br>", unsafe_allow_html=True)
 
-    if st.button("Start Interview"):
+    if st.button(
+        "Start Interview",
+        use_container_width=True
+    ):
 
         if not st.session_state.user_id:
 
@@ -1064,12 +872,12 @@ with tab_start:
                         st.session_state.dsa_weight,
                         2
                     ),
-                    "ai_ml": ai_ml_weight
-                }
+                    "ai_ml": ai_ml_weight,
+                },
             }
 
             with st.spinner(
-                "Preparing your interview..."
+                "Preparing your first question..."
             ):
 
                 data, error = call_api(
@@ -1084,36 +892,25 @@ with tab_start:
 
             else:
 
-                st.session_state.session_id = data.get(
-                    "session_id"
+                st.session_state.session_id = (
+                    data.get("session_id")
                 )
 
-                st.session_state.question = normalize_question(
-                    data.get("first_question")
+                st.session_state.question = (
+                    normalize_question(
+                        data.get("first_question")
+                    )
                 )
 
                 st.session_state.last_result = None
                 st.session_state.answered = 0
                 st.session_state.finished = False
 
-                st.success(
-                    "Interview session created."
-                )
-
                 st.rerun()
-
-    if (
-        st.session_state.session_id
-        and st.session_state.question
-    ):
-
-        st.info(
-            "Your interview is ready. Open the Interview tab."
-        )
 
 
 # ============================================================
-# INTERVIEW
+# INTERVIEW TAB
 # ============================================================
 
 with tab_interview:
@@ -1125,7 +922,7 @@ with tab_interview:
         </div>
 
         <div class="section-title">
-            Practice and evaluate
+            Practice your answer
         </div>
         """,
         unsafe_allow_html=True
@@ -1133,8 +930,60 @@ with tab_interview:
 
     if st.session_state.last_result:
 
-        show_result(
-            st.session_state.last_result
+        result = st.session_state.last_result
+
+        st.markdown("### Previous answer")
+
+        score = result.get(
+            "score",
+            "-"
+        )
+
+        domain = result.get(
+            "domain",
+            ""
+        )
+
+        a, b = st.columns(2)
+
+        with a:
+            st.metric("Score", score)
+
+        with b:
+            st.metric("Domain", domain)
+
+        breakdown = result.get(
+            "breakdown"
+        ) or {}
+
+        if breakdown:
+
+            cols = st.columns(
+                len(breakdown)
+            )
+
+            for col, (key, value) in zip(
+                cols,
+                breakdown.items()
+            ):
+
+                with col:
+
+                    st.metric(
+                        key.replace(
+                            "_",
+                            " "
+                        ).title(),
+                        value
+                    )
+
+        st.markdown("**Feedback**")
+
+        st.write(
+            result.get(
+                "feedback",
+                "No feedback available."
+            )
         )
 
         st.divider()
@@ -1143,19 +992,57 @@ with tab_interview:
 
     if question:
 
-        show_question(question)
+        st.markdown(
+            f"""
+            <div class="question-card">
+
+                <div class="question-label">
+                    CURRENT QUESTION
+                </div>
+
+                <div class="question-text">
+                    {question["question"]}
+                </div>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        q1, q2, q3 = st.columns(3)
+
+        with q1:
+            st.caption("TOPIC")
+            st.write(
+                question["topic"]
+            )
+
+        with q2:
+            st.caption("DOMAIN")
+            st.write(
+                question["domain"]
+            )
+
+        with q3:
+            st.caption("DIFFICULTY")
+            st.write(
+                question["difficulty"]
+            )
 
         answer = st.text_area(
             "Your answer",
-            height=230,
+            height=220,
             placeholder=(
-                "Write your answer as you would "
-                "during a technical interview..."
+                "Explain your approach, reasoning "
+                "and solution here..."
             ),
             key=f"answer_{question['id']}"
         )
 
-        if st.button("Submit Answer"):
+        if st.button(
+            "Submit Answer",
+            use_container_width=True
+        ):
 
             if not answer.strip():
 
@@ -1173,7 +1060,7 @@ with tab_interview:
                         question["id"],
 
                     "answer":
-                        answer
+                        answer,
                 }
 
                 with st.spinner(
@@ -1196,12 +1083,17 @@ with tab_interview:
 
                     st.session_state.answered += 1
 
-                    st.session_state.question = normalize_question(
-                        data.get("next_question")
+                    st.session_state.question = (
+                        normalize_question(
+                            data.get(
+                                "next_question"
+                            )
+                        )
                     )
 
                     st.session_state.finished = (
-                        st.session_state.question is None
+                        st.session_state.question
+                        is None
                     )
 
                     st.rerun()
@@ -1215,13 +1107,20 @@ with tab_interview:
 
     else:
 
-        st.info(
-            "Start an interview from the Start Interview tab."
+        st.markdown(
+            """
+            <div class="info-card">
+                Start an interview from the
+                <strong>Start Interview</strong> tab
+                to receive your first question.
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
 
 # ============================================================
-# PROGRESS
+# PROGRESS TAB
 # ============================================================
 
 with tab_progress:
@@ -1233,18 +1132,21 @@ with tab_progress:
         </div>
 
         <div class="section-title">
-            Track your progress
+            Your progress
         </div>
 
         <div class="section-description">
-            Review weak topics, strong topics and
-            recommended areas for further practice.
+            Review your interview performance and
+            identify topics that need more practice.
         </div>
         """,
         unsafe_allow_html=True
     )
 
-    if st.button("Load Progress"):
+    if st.button(
+        "Load Progress",
+        use_container_width=True
+    ):
 
         if not st.session_state.user_id:
 
@@ -1265,203 +1167,153 @@ with tab_progress:
 
             else:
 
-                st.session_state.progress_data = data
+                left, right = st.columns(2)
 
+                weak = data.get(
+                    "weak_topics"
+                ) or []
 
-    data = st.session_state.progress_data
+                strong = data.get(
+                    "strong_topics"
+                ) or []
 
-    if data:
+                with left:
 
-        weak = data.get(
-            "weak_topics"
-        ) or []
+                    st.markdown("### Areas to improve")
 
-        strong = data.get(
-            "strong_topics"
-        ) or []
+                    if weak:
 
-        c1, c2 = st.columns(2)
+                        for topic in weak:
+                            st.write(topic)
 
-        with c1:
+                    else:
 
-            st.markdown(
-                """
-                <div class="metric-card">
+                        st.caption(
+                            "No weak topics identified yet."
+                        )
 
-                    <div class="metric-label">
-                        Weak topics
-                    </div>
+                with right:
 
-                    <div class="metric-value">
-                        %d
-                    </div>
+                    st.markdown("### Strong topics")
 
-                </div>
-                """ % len(weak),
-                unsafe_allow_html=True
-            )
+                    if strong:
 
-        with c2:
+                        for topic in strong:
+                            st.write(topic)
 
-            st.markdown(
-                """
-                <div class="metric-card">
+                    else:
 
-                    <div class="metric-label">
-                        Strong topics
-                    </div>
+                        st.caption(
+                            "No strong topics identified yet."
+                        )
 
-                    <div class="metric-value">
-                        %d
-                    </div>
-
-                </div>
-                """ % len(strong),
-                unsafe_allow_html=True
-            )
-
-        st.write("")
-
-        left, right = st.columns(2)
-
-        with left:
-
-            st.subheader("Weak topics")
-
-            if weak:
-
-                for topic in weak:
-
-                    st.markdown(
-                        f'<span class="tag">{topic}</span>',
-                        unsafe_allow_html=True
-                    )
-
-            else:
-
-                st.write(
-                    "No weak topics identified yet."
-                )
-
-        with right:
-
-            st.subheader("Strong topics")
-
-            if strong:
-
-                for topic in strong:
-
-                    st.markdown(
-                        f'<span class="tag">{topic}</span>',
-                        unsafe_allow_html=True
-                    )
-
-            else:
-
-                st.write(
-                    "No strong topics identified yet."
-                )
-
-
-        st.write("")
-
-        st.subheader(
-            "Recommended topics"
-        )
-
-        recs = data.get(
-            "recommended_topics"
-        ) or {}
-
-        if recs:
-
-            for topic, details in recs.items():
+                st.divider()
 
                 st.markdown(
-                    f"**{topic.replace('_', ' ').title()}**"
+                    "### Recommended topics"
                 )
 
-                if isinstance(details, dict):
+                recommendations = data.get(
+                    "recommended_topics"
+                ) or {}
 
-                    related = details.get(
-                        "related"
-                    ) or []
+                if recommendations:
 
-                    reason = details.get(
-                        "reason"
-                    )
+                    for topic, details in recommendations.items():
+
+                        st.markdown(
+                            f"**{topic.replace('_', ' ').title()}**"
+                        )
+
+                        if isinstance(
+                            details,
+                            dict
+                        ):
+
+                            related = (
+                                details.get(
+                                    "related"
+                                )
+                                or []
+                            )
+
+                            reason = details.get(
+                                "reason"
+                            )
+
+                        else:
+
+                            related = (
+                                details
+                                or []
+                            )
+
+                            reason = None
+
+                        if related:
+
+                            st.write(
+                                "Related: "
+                                + ", ".join(
+                                    related
+                                )
+                            )
+
+                        if reason:
+
+                            st.caption(
+                                reason
+                            )
 
                 else:
 
-                    related = details or []
-                    reason = None
-
-                if related:
-
-                    st.write(
-                        "Related: "
-                        + ", ".join(
-                            r.replace("_", " ").title()
-                            for r in related
-                        )
+                    st.caption(
+                        "No recommendations yet."
                     )
 
-                if reason:
+                st.divider()
+
+                st.markdown(
+                    "### Interview history"
+                )
+
+                history = data.get(
+                    "history"
+                ) or []
+
+                if history:
+
+                    df = pd.DataFrame(
+                        history
+                    )
+
+                    st.dataframe(
+                        df,
+                        use_container_width=True,
+                        hide_index=True
+                    )
+
+                    if (
+                        len(df) > 1
+                        and "avg_score" in df.columns
+                    ):
+
+                        x = (
+                            df["date"]
+                            if "date" in df.columns
+                            else df.index
+                        )
+
+                        chart_df = df.set_index(x)
+
+                        st.line_chart(
+                            chart_df[
+                                ["avg_score"]
+                            ]
+                        )
+
+                else:
 
                     st.caption(
-                        reason
+                        "No interview history yet."
                     )
-
-        else:
-
-            st.write(
-                "No recommendations available yet."
-            )
-
-
-        st.write("")
-
-        st.subheader(
-            "Interview history"
-        )
-
-        history = data.get(
-            "history"
-        ) or []
-
-        if history:
-
-            df = pd.DataFrame(
-                history
-            )
-
-            st.dataframe(
-                df,
-                use_container_width=True,
-                hide_index=True
-            )
-
-            if (
-                len(df) > 1
-                and "avg_score" in df.columns
-            ):
-
-                x = (
-                    df["date"]
-                    if "date" in df.columns
-                    else df.index
-                )
-
-                chart_df = df.set_index(x)[
-                    ["avg_score"]
-                ]
-
-                st.line_chart(
-                    chart_df
-                )
-
-        else:
-
-            st.write(
-                "No interview history available yet."
-            )
